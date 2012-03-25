@@ -21,6 +21,11 @@ with qw/
     Dist::Zilla::Role::FileMunger
 /;
 
+with 'Dist::Zilla::Role::Author::YANICK::RequireZillaRole' => {
+    roles => [ qw/ Author::YANICK::Changelog / ],
+};
+
+
 has repo => (
     is => 'ro',
     default => sub { Git::Repository->new( work_tree => '.' ) },
