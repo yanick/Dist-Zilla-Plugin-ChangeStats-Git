@@ -38,6 +38,7 @@ has change_file => (
 
 sub munge_files {
   my ($self) = @_;
+  return;
 
   my @output = $self->repo->run( 'log', '--stat', 'releases..master' );
 
