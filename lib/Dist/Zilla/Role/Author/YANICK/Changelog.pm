@@ -5,10 +5,9 @@ use warnings;
 
 use Moose::Role;
 
-=pod
-
 has changelog => (
     is => 'ro',
+    lazy => 1,  # required here because of the lazy role
     default => 'Changes',
 );
 
@@ -27,35 +26,34 @@ has changes => (
     lazy => 1,
     default => sub {
         my $self = shift;
-        my $file = $self->changelog_file;
 
-        return CPAN::Changes->load_string( $file->content, 
+        return CPAN::Changes->load_string( 
+            $self->changelog_file->content, 
             next_token => qr/{{\$NEXT}}/
         );
     }
 );
 
-sub save_changelog {
+sub set_changelog_auto_update {
     my $self = shift;
-    $self->changelog_file->content($self->changes->serialize);
-}
 
-before build => sub {
-    my $self = shift;
-    return;
-    for my $plugin ( $self->plugins_with(-FileMunger)->flatten ) {
+    for my $plugin ( @{ $self->plugins_with(-FileMunger) } ) {
         $plugin->meta->make_mutable;
         $plugin->meta->add_after_method_modifier('munge_files', sub{ 
-            warn "YAY!";
             my $self = shift;
             $self->zilla->save_changelog;
         });
         $plugin->meta->make_immutable;
-
     }
+}
 
-};
+sub save_changelog {
+    my $self = shift;
+    warn 'saving...';
+    warn $self->changes->serialize;
+    $self->changelog_file->content($self->changes->serialize);
+}
 
-=cut
+before build_in => \&set_changelog_auto_update;
 
 1;

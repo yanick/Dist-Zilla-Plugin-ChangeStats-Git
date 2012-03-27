@@ -38,26 +38,15 @@ has change_file => (
 
 sub munge_files {
   my ($self) = @_;
-  return;
 
   my @output = $self->repo->run( 'log', '--stat', 'releases..master' );
 
   # actually, only the last line is interesting
   my $stats = "stats: " . $output[-1];
 
-  my ($file) = grep { $_->name eq $self->change_file } @{ $self->zilla->files };
-  return unless $file;
+  my ( $next ) = reverse $self->zilla->changes->releases;
 
-  my $changes = CPAN::Changes->load_string( $file->content, 
-      next_token => qr/{{\$NEXT}}/
-  );
-
-  my ( $next ) = reverse $changes->releases;
-
-  my @changes = $next->add_changes( $stats );
-
-  $self->log_debug([ 'updating contents of %s in memory', $file->name ]);
-  $file->content($changes->serialize);
+  $next->add_changes( $stats );
 }
 
 
