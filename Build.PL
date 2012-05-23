@@ -24,7 +24,7 @@ my %module_build_args = (
     "Yanick Champoux <yanick\@babyl.dyndns.org>"
   ],
   "dist_name" => "Dist-Zilla-Plugin-ChangeStats-Git",
-  "dist_version" => "0.1.0",
+  "dist_version" => "0.1.1",
   "license" => "perl",
   "module_name" => "Dist::Zilla::Plugin::ChangeStats::Git",
   "recommends" => {},
