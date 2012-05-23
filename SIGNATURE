@@ -1,0 +1,39 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.68.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 0f0aa3564bfbc68c842fedd61cdafc41f89b649c AUTHOR_PLEDGE
+SHA1 527bd72149f3f8274c29ec47ea9248aa0f5ed304 Build.PL
+SHA1 62515c28a3fe69f198804a24e174e84e0203bad7 Changes
+SHA1 405f0b9b60a612ba8d68cad2b08c84ceeb552e3c INSTALL
+SHA1 33260abc93b43a44581b0b6263d7e4318f4122bb LICENSE
+SHA1 b97596bf509855df62499df7a23c6c9b4f62ca4d MANIFEST
+SHA1 60827ddf365605157132899a4bd547fc4e6e55d2 META.json
+SHA1 02e8caafeaa98a5b951dfe873c758cd50eb5dcd7 META.yml
+SHA1 0c9e551779191c326b15d6f33ea5971405411f76 README
+SHA1 6a42eecaf70478aa9f7fbb954af05b141fbca5e7 README.mkdn
+SHA1 974996a6c34666f11dfa26e2bfb4f79d9ef215d3 lib/Dist/Zilla/Plugin/ChangeStats/Git.pm
+SHA1 3293a310fa2f063211e1155544c72ad39edd62c1 lib/Dist/Zilla/Role/Author/YANICK/Changelog.pm
+SHA1 1a80171c1054ab01b7c35c684a3b91f768a17bff lib/Dist/Zilla/Role/Author/YANICK/RequireZillaRole.pm
+SHA1 3cbe905b92fbc69d59a06031d5ce6c837b352aa2 t/00-compile.t
+SHA1 473906254ecd96009795d4b7fbc82fac48c03ecd t/000-report-versions.t
+SHA1 ccbef705e30d71546b8a7c8f5e443a809a29f5d2 t/basic.t
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk+8S1MACgkQ34Hwf+GwC4xpdACgqGg/TClwauVtxITT7p/IBY4Z
+0GgAn1Bd0+rTNwi4iGv+fKxtMF8BzlZw
+=7Wuj
+-----END PGP SIGNATURE-----

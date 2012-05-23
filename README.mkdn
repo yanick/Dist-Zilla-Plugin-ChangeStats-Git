@@ -1,0 +1,38 @@
+# NAME
+
+Dist::Zilla::Plugin::ChangeStats::Git - add code churn statistics to the changelog
+
+# VERSION
+
+version 0.1.0
+
+# SYNOPSIS
+
+    In the dist.ini:
+
+    [ChangeStats::Git]
+    group=STATISTICS
+
+# DESCRIPTION
+
+Adds a line to the changelog giving some stats about the
+code churn since the last release, which will look like:
+
+  - code churn: 6 files changed, 111 insertions(+), 1 deletions(-)
+
+# ARGUMENTS
+
+## group
+
+If given, the line is added to the specified group.
+
+# AUTHOR
+
+Yanick Champoux <yanick@babyl.dyndns.org>
+
+# COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.

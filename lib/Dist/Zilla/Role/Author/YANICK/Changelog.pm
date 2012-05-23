@@ -1,4 +1,10 @@
 package Dist::Zilla::Role::Author::YANICK::Changelog;
+BEGIN {
+  $Dist::Zilla::Role::Author::YANICK::Changelog::AUTHORITY = 'cpan:YANICK';
+}
+{
+  $Dist::Zilla::Role::Author::YANICK::Changelog::VERSION = '0.1.0';
+}
 
 use strict;
 use warnings;
@@ -56,3 +62,28 @@ sub save_changelog {
 before build_in => \&set_changelog_auto_update;
 
 1;
+
+__END__
+=pod
+
+=head1 NAME
+
+Dist::Zilla::Role::Author::YANICK::Changelog
+
+=head1 VERSION
+
+version 0.1.0
+
+=head1 AUTHOR
+
+Yanick Champoux <yanick@babyl.dyndns.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
