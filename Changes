@@ -1,6 +1,8 @@
 Revision history for Dist-Zilla-Plugin-ChangeStats-Git
 
 {{$NEXT}}
+
+0.1.1     2012-05-22
  [API CHANGES]
 
  [BUG FIXES]
