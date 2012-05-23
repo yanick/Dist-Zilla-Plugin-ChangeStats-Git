@@ -1,3 +1,5 @@
+tmp
+corpus
 ^dist.ini
 ^MANIFEST.SKIP
 Dist-Zilla-Plugin-ChangeStats-Git.*

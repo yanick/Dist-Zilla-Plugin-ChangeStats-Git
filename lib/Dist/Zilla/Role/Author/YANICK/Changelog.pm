@@ -49,8 +49,7 @@ sub set_changelog_auto_update {
 
 sub save_changelog {
     my $self = shift;
-    warn 'saving...';
-    warn $self->changes->serialize;
+    #warn $self->changes->serialize;
     $self->changelog_file->content($self->changes->serialize);
 }
 
