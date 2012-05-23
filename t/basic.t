@@ -1,7 +1,9 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More; tests => 5;
+
+plan skip_all => 'coming soon';
 
 use Test::DZil;
 
@@ -21,13 +23,17 @@ my $dist_ini = dist_ini({
 
 my $tzil = Builder->from_config(
     { dist_root => 'corpus' },
-        {
-            'source/dist.ini' => $dist_ini
-        },
-    );
+    #  {
+    #        'source/dist.ini' => $dist_ini
+    #    },
+);
 
 $tzil->build;
 
 like $tzil->slurp_file('build/Changes'),
-    qr/XXX/,
-    "regular change, count as minor change";
+    qr/
+\[STATISTICS\]\s*\n
+\s*-\s*code\schurn:\s+\d+\sfiles\schanged,
+\s\d+\sinsertions\(\+\),\s\d+\sdeletions\(-\)
+    /x,
+    "stats added";
