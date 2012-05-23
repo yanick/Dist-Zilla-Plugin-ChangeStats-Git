@@ -21,18 +21,19 @@ has changelog_file => (
     },
 );
 
-has changes => (
-    is => 'ro',
-    lazy => 1,
-    default => sub {
-        my $self = shift;
-
-        return CPAN::Changes->load_string( 
-            $self->changelog_file->content, 
-            next_token => qr/{{\$NEXT}}/
-        );
-    }
+has _changes => (
+    is => 'rw',
+    clearer => 'clear_changes',
 );
+
+sub changes {
+    my $self = shift;
+
+    return $self->_changes || $self->_changes( CPAN::Changes->load_string( 
+        $self->changelog_file->content, 
+        next_token => qr/{{\$NEXT}}/
+    ));
+}
 
 sub set_changelog_auto_update {
     my $self = shift;
@@ -40,8 +41,13 @@ sub set_changelog_auto_update {
     for my $plugin ( @{ $self->plugins_with(-FileMunger) } ) {
         $plugin->meta->make_mutable;
         $plugin->meta->add_after_method_modifier('munge_files', sub{ 
+                my $self = shift;
+                $self->zilla->clear_changes;
+        });
+        $plugin->meta->add_before_method_modifier('munge_files', sub{ 
+                return;
             my $self = shift;
-            $self->zilla->save_changelog;
+            $self->zilla->load_changelog;
         });
         $plugin->meta->make_immutable;
     }

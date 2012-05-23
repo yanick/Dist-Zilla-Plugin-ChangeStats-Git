@@ -68,6 +68,8 @@ sub munge_files {
   my ( $next ) = reverse $self->zilla->changes->releases;
 
   $next->add_changes( { group => $self->group  }, $stats );
+
+  $self->zilla->save_changelog;
 }
 
 __PACKAGE__->meta->make_immutable;
