@@ -59,7 +59,7 @@ has group => (
 sub munge_files {
   my ($self) = @_;
 
-  my @output = $self->repo->run( 'diff', '--stat', 'releases..master' );
+  my @output = $self->repo->run( 'diff', '--stat', 'releases...master' );
 
   # actually, only the last line is interesting
   my $stats = "code churn: " . $output[-1];
