@@ -1,15 +1,20 @@
 Revision history for Dist-Zilla-Plugin-ChangeStats-Git
 
+0.1.3 2012-06-03
+ [BUG FIXES]
+ - Three dots, for heaven's sake! (releases...master)
+
+ [STATISTICS]
+ - code churn: 18 files changed, 82 insertions(+), 1400 deletions(-)
+
 0.1.2 2012-06-03
  [BUG FIXES]
  - Stats taken from 'git diff', not 'git log'.
-
- [STATISTICS]
- - code churn: 1 files changed, 2 insertions(+), 0 deletions(-)
 
 0.1.1 2012-05-22
  [BUG FIXES]
  - I got the pre/post munging all wrong
 
 0.1.0 2012-05-22
+ - First version, unleashed on an unsuspecting world.
 

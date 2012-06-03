@@ -3,7 +3,7 @@ BEGIN {
   $Dist::Zilla::Plugin::ChangeStats::Git::AUTHORITY = 'cpan:YANICK';
 }
 {
-  $Dist::Zilla::Plugin::ChangeStats::Git::VERSION = '0.1.2';
+  $Dist::Zilla::Plugin::ChangeStats::Git::VERSION = '0.1.3';
 }
 # ABSTRACT: add code churn statistics to the changelog
 
@@ -44,7 +44,7 @@ has group => (
 sub munge_files {
   my ($self) = @_;
 
-  my @output = $self->repo->run( 'diff', '--stat', 'releases..master' );
+  my @output = $self->repo->run( 'diff', '--stat', 'releases...master' );
 
   # actually, only the last line is interesting
   my $stats = "code churn: " . $output[-1];
@@ -73,7 +73,7 @@ Dist::Zilla::Plugin::ChangeStats::Git - add code churn statistics to the changel
 
 =head1 VERSION
 
-version 0.1.2
+version 0.1.3
 
 =head1 SYNOPSIS
 
