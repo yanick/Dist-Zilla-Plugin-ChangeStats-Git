@@ -1,16 +1,18 @@
 Revision history for Dist-Zilla-Plugin-ChangeStats-Git
 
 {{$NEXT}}
-
-0.1.1     2012-05-22
  [API CHANGES]
 
  [BUG FIXES]
- - I got the pre/post munging all wrong
+ - Stats taken from 'git diff', not 'git log'.
 
  [DOCUMENTATION]
 
  [ENHANCEMENTS]
 
+0.1.1 2012-05-22
+ [BUG FIXES]
+ - I got the pre/post munging all wrong
+
 0.1.0 2012-05-22
-  - First version, unleashed on an unsuspecting world.
+

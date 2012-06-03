@@ -59,17 +59,19 @@ has group => (
 sub munge_files {
   my ($self) = @_;
 
-  my @output = $self->repo->run( 'log', '--stat', 'releases..master' );
+  my @output = $self->repo->run( 'diff', '--stat', 'releases..master' );
 
   # actually, only the last line is interesting
   my $stats = "code churn: " . $output[-1];
   $stats =~ s/\s+/ /g;
 
-  my ( $next ) = reverse $self->zilla->changes->releases;
+  my $changelog = $self->zilla->changelog;
+
+  my ( $next ) = reverse $changelog->releases;
 
   $next->add_changes( { group => $self->group  }, $stats );
 
-  $self->zilla->save_changelog;
+  $self->zilla->save_changelog($changelog);
 }
 
 __PACKAGE__->meta->make_immutable;
