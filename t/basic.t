@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More; tests => 5;
+use Test::More;# tests => 5;
 
 plan skip_all => 'coming soon';
 

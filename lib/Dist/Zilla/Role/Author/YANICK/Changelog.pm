@@ -3,82 +3,109 @@ BEGIN {
   $Dist::Zilla::Role::Author::YANICK::Changelog::AUTHORITY = 'cpan:YANICK';
 }
 {
-  $Dist::Zilla::Role::Author::YANICK::Changelog::VERSION = '0.1.1';
+  $Dist::Zilla::Role::Author::YANICK::Changelog::VERSION = '0.1.2';
 }
+# ABSTRACT: provides an accessor for the changelog
 
 use strict;
 use warnings;
 
 use Moose::Role;
+use List::Util qw/ first /;
 
-has changelog => (
+
+has changelog_name => (
     is => 'ro',
     lazy => 1,  # required here because of the lazy role
     default => 'Changes',
 );
 
-has changelog_file => (
-    is => 'ro',
-    lazy => 1,
-    default => sub {
-        my $self = shift;
-        my ($file) = grep { $_->name eq $self->changelog } @{ $self->files };
-        return $file;
-    },
-);
 
-has _changes => (
-    is => 'rw',
-    clearer => 'clear_changes',
-);
-
-sub changes {
+sub changelog_file {
     my $self = shift;
 
-    return $self->_changes || $self->_changes( CPAN::Changes->load_string( 
+    return first { $_->name eq $self->changelog_name } @{ $self->files };
+};
+
+
+sub changelog {
+    my $self = shift;
+
+    return CPAN::Changes->load_string( 
         $self->changelog_file->content, 
         next_token => qr/{{\$NEXT}}/
-    ));
+    );
 }
 
-sub set_changelog_auto_update {
-    my $self = shift;
-
-    for my $plugin ( @{ $self->plugins_with(-FileMunger) } ) {
-        $plugin->meta->make_mutable;
-        $plugin->meta->add_after_method_modifier('munge_files', sub{ 
-                my $self = shift;
-                $self->zilla->clear_changes;
-        });
-        $plugin->meta->add_before_method_modifier('munge_files', sub{ 
-                return;
-            my $self = shift;
-            $self->zilla->load_changelog;
-        });
-        $plugin->meta->make_immutable;
-    }
-}
 
 sub save_changelog {
     my $self = shift;
-    #warn $self->changes->serialize;
-    $self->changelog_file->content($self->changes->serialize);
+    my $changes = shift;
+    $self->changelog_file->content($changes->serialize);
 }
-
-before build_in => \&set_changelog_auto_update;
 
 1;
 
-__END__
+
+
 =pod
 
 =head1 NAME
 
-Dist::Zilla::Role::Author::YANICK::Changelog
+Dist::Zilla::Role::Author::YANICK::Changelog - provides an accessor for the changelog
 
 =head1 VERSION
 
-version 0.1.1
+version 0.1.2
+
+=head1 SYNOPSIS
+
+    package Dist::Zilla::Plugin::Foo;
+
+    use Moose;
+
+    qith qw/ 
+        Dist::Zilla::Role::Plugin
+        Dist::Zilla::Role::FileMunger
+    /;
+
+    with 'Dist::Zilla::Role::Author::YANICK::RequireZillaRole' => {
+        roles => [ qw/ Author::YANICK::Changelog / ],
+    };
+
+    sub munge_files {
+        my $self = shift;
+
+        my $changes = $self->changes;
+
+        ...
+
+        $self->save_changelog( $changes );
+    }
+
+=head1 DESCRIPTION
+
+Allows to access directly the distribution's changelog.
+
+=head1 ATTRIBUTES
+
+=head1 changelog_name()
+
+The name of the changelog file. Defaults to C<Changes>.
+
+=head1 METHODS
+
+=head2 changelog_file
+
+Returns the changelog file object.
+
+=head2 changelog()
+
+Returns a L<CPAN::Changes> object representing the changelog.
+
+=head2 save_changelog( $changes )
+
+Commit I<$changes> as the changelog file for the distribution.
 
 =head1 AUTHOR
 
@@ -92,4 +119,7 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
+
+
+__END__
 

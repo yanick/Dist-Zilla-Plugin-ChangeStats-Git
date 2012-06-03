@@ -24,7 +24,7 @@ my %module_build_args = (
     "Yanick Champoux <yanick\@babyl.dyndns.org>"
   ],
   "dist_name" => "Dist-Zilla-Plugin-ChangeStats-Git",
-  "dist_version" => "0.1.1",
+  "dist_version" => "0.1.2",
   "license" => "perl",
   "module_name" => "Dist::Zilla::Plugin::ChangeStats::Git",
   "recommends" => {},
@@ -34,6 +34,7 @@ my %module_build_args = (
     "Dist::Zilla::Role::FileMunger" => 0,
     "Dist::Zilla::Role::Plugin" => 0,
     "Git::Repository" => 0,
+    "List::Util" => 0,
     "Module::Load" => 0,
     "Moose" => 0,
     "Moose::Role" => 0,

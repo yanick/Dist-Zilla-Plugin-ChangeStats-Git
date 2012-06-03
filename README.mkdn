@@ -4,7 +4,7 @@ Dist::Zilla::Plugin::ChangeStats::Git - add code churn statistics to the changel
 
 # VERSION
 
-version 0.1.1
+version 0.1.2
 
 # SYNOPSIS
 

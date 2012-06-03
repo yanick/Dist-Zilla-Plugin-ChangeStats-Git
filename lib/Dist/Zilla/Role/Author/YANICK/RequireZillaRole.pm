@@ -3,7 +3,7 @@ BEGIN {
   $Dist::Zilla::Role::Author::YANICK::RequireZillaRole::AUTHORITY = 'cpan:YANICK';
 }
 {
-  $Dist::Zilla::Role::Author::YANICK::RequireZillaRole::VERSION = '0.1.1';
+  $Dist::Zilla::Role::Author::YANICK::RequireZillaRole::VERSION = '0.1.2';
 }
 
 use strict;
@@ -58,7 +58,7 @@ Dist::Zilla::Role::Author::YANICK::RequireZillaRole
 
 =head1 VERSION
 
-version 0.1.1
+version 0.1.2
 
 =head1 AUTHOR
 

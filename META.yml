@@ -23,18 +23,19 @@ name: Dist-Zilla-Plugin-ChangeStats-Git
 provides:
   Dist::Zilla::Plugin::ChangeStats::Git:
     file: lib/Dist/Zilla/Plugin/ChangeStats/Git.pm
-    version: v0.1.1
+    version: v0.1.2
   Dist::Zilla::Role::Author::YANICK::Changelog:
     file: lib/Dist/Zilla/Role/Author/YANICK/Changelog.pm
-    version: v0.1.1
+    version: v0.1.2
   Dist::Zilla::Role::Author::YANICK::RequireZillaRole:
     file: lib/Dist/Zilla/Role/Author/YANICK/RequireZillaRole.pm
-    version: v0.1.1
+    version: v0.1.2
 requires:
   CPAN::Changes: 0.17
   Dist::Zilla::Role::FileMunger: 0
   Dist::Zilla::Role::Plugin: 0
   Git::Repository: 0
+  List::Util: 0
   Module::Load: 0
   Moose: 0
   Moose::Role: 0
@@ -47,7 +48,7 @@ resources:
   bugtracker: http://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-Plugin-ChangeStats-Git
   homepage: http://search.cpan.org/dist/Dist-Zilla-Plugin-ChangeStats-Git/
   repository: https://github.com/yanick/Dist-Zilla-Plugin-ChangeStats-Git.git
-version: 0.1.1
+version: 0.1.2
 x_author_pledge:
   version: 1
 x_authority: cpan:YANICK
