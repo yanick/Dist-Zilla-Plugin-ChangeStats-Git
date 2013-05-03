@@ -96,12 +96,17 @@ sub after_release {
       next_token => qr/{{\$NEXT}}/ 
   ); 
 
-  my ( $next ) = reverse $changes->releases;
+  for my $next ( reverse $changes->releases ) {
+    next if $next->version =~ /NEXT/;
 
-  $next->add_changes( { group => $self->group  }, $self->stats );
+    $next->add_changes( { group => $self->group  }, $self->stats );
 
-  # and finally rewrite the changelog on disk
-  path($self->zilla->changelog_name)->spew($changes->serialize);
+    # and finally rewrite the changelog on disk
+    path($self->zilla->changelog_name)->spew($changes->serialize);
+
+    return;
+  }
+
 }
 
 __PACKAGE__->meta->make_immutable;
