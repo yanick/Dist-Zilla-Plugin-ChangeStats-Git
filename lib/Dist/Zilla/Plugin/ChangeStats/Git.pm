@@ -1,27 +1,12 @@
 package Dist::Zilla::Plugin::ChangeStats::Git;
+BEGIN {
+  $Dist::Zilla::Plugin::ChangeStats::Git::AUTHORITY = 'cpan:YANICK';
+}
+{
+  $Dist::Zilla::Plugin::ChangeStats::Git::VERSION = '0.2.0';
+}
 # ABSTRACT: add code churn statistics to the changelog
 
-=head1 SYNOPSIS
-
-    In the dist.ini:
-
-    [ChangeStats::Git]
-    group=STATISTICS
-
-=head1 DESCRIPTION
-
-Adds a line to the changelog giving some stats about the
-code churn since the last release, which will look like:
-
-  - code churn: 6 files changed, 111 insertions(+), 1 deletions(-)
-
-=head1 ARGUMENTS
-
-=head2 group
-
-If given, the line is added to the specified group.
-
-=cut
 
 use strict;
 use warnings;
@@ -108,3 +93,48 @@ __PACKAGE__->meta->make_immutable;
 no Moose;
 
 1;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+Dist::Zilla::Plugin::ChangeStats::Git - add code churn statistics to the changelog
+
+=head1 VERSION
+
+version 0.2.0
+
+=head1 SYNOPSIS
+
+    In the dist.ini:
+
+    [ChangeStats::Git]
+    group=STATISTICS
+
+=head1 DESCRIPTION
+
+Adds a line to the changelog giving some stats about the
+code churn since the last release, which will look like:
+
+  - code churn: 6 files changed, 111 insertions(+), 1 deletions(-)
+
+=head1 ARGUMENTS
+
+=head2 group
+
+If given, the line is added to the specified group.
+
+=head1 AUTHOR
+
+Yanick Champoux <yanick@babyl.dyndns.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
