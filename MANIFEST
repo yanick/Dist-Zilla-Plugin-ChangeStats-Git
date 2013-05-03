@@ -1,5 +1,6 @@
 AUTHOR_PLEDGE
 Build.PL
+CONTRIBUTORS
 Changes
 INSTALL
 LICENSE
@@ -13,5 +14,6 @@ lib/Dist/Zilla/Plugin/ChangeStats/Git.pm
 lib/Dist/Zilla/Role/Author/YANICK/Changelog.pm
 lib/Dist/Zilla/Role/Author/YANICK/RequireZillaRole.pm
 t/00-compile.t
-t/000-report-versions.t
+t/000-report-versions-tiny.t
 t/basic.t
+xt/release/unused-vars.t
