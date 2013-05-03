@@ -1,4 +1,10 @@
 package Dist::Zilla::Role::Author::YANICK::RequireZillaRole;
+BEGIN {
+  $Dist::Zilla::Role::Author::YANICK::RequireZillaRole::AUTHORITY = 'cpan:YANICK';
+}
+{
+  $Dist::Zilla::Role::Author::YANICK::RequireZillaRole::VERSION = '0.2.1';
+}
 
 use strict;
 use warnings;
@@ -42,3 +48,28 @@ role {
     }
 
 }
+
+__END__
+
+=pod
+
+=head1 NAME
+
+Dist::Zilla::Role::Author::YANICK::RequireZillaRole
+
+=head1 VERSION
+
+version 0.2.1
+
+=head1 AUTHOR
+
+Yanick Champoux <yanick@babyl.dyndns.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
