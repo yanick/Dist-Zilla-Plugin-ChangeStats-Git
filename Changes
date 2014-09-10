@@ -8,6 +8,7 @@ Revision history for Dist-Zilla-Plugin-ChangeStats-Git
  [DOCUMENTATION]
 
  [ENHANCEMENTS]
+ - Can configure develop and releases branches. (GH#2)
 
  [NEW FEATURES]
 

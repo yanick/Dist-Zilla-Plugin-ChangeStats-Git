@@ -21,6 +21,14 @@ code churn since the last release, which will look like:
 
 If given, the line is added to the specified group.
 
+=head2 develop_branch
+
+The master developing branch. Defaults to I<master>.
+
+=head2 release_branch
+
+The branch recording the releases. Defaults to I<releases>.
+
 =cut
 
 use strict;
@@ -53,6 +61,18 @@ has change_file => (
     default => 'Changes',
 );
 
+has "develop_branch" => (
+    isa => 'Str',
+    is => 'ro',
+    default => 'master'
+);
+
+has "release_branch" => (
+    isa => 'Str',
+    is => 'ro',
+    default => 'releases'
+);
+
 has group => (
     is => 'ro',
     default => '',
@@ -64,7 +84,9 @@ has stats => (
     default => sub {
         my $self = shift;
         
-        my @output = $self->repo->run( 'diff', '--stat', 'releases...master' );
+        my @output = $self->repo->run( 'diff', '--stat',
+            join '...', $self->release_branch, $self->develop_branch
+        );
 
         # actually, only the last line is interesting
         my $stats = "code churn: " . $output[-1];
@@ -76,7 +98,6 @@ has stats => (
 
 sub munge_files {
   my ($self) = @_;
-
 
   my $changelog = $self->zilla->changelog;
 
