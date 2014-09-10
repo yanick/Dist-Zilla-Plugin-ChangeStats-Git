@@ -1,18 +1,11 @@
 Revision history for Dist-Zilla-Plugin-ChangeStats-Git
 
-{{$NEXT}}
- [API CHANGES]
-
- [BUG FIXES]
-
- [DOCUMENTATION]
-
+0.3.0 2014-09-09
  [ENHANCEMENTS]
  - Can configure develop and releases branches. (GH#2)
 
- [NEW FEATURES]
-
  [STATISTICS]
+ - code churn: 3 files changed, 35 insertions(+), 3 deletions(-)
 
 0.2.1 2013-05-02
  [BUG FIXES]
