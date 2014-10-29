@@ -33,8 +33,8 @@ regex will be used. Overrides the default set in develop_branch if specified. De
 NOTE: You need to capture the entire tag in the regexp! This is especially useful in conjunction
 with the L<Dist::Zilla::Plugin::Git::Tag> plugin! Sample usage in the F<dist.ini> file:
 
-        [ChangeStats::Git]
-        release_regexp = ^(release-.+)$
+	[ChangeStats::Git]
+	release_regexp = ^(release-.+)$
 
 	[Git::Tag]
 	tag_format = release-%v
@@ -149,7 +149,9 @@ sub _get_release_tag {
 	my( $self, $regex ) = @_;
 
 	# search whatever matches our regex, then return the most recent one
-	return ( map { $_ =~ /$regex/ } $self->repo->run( 'tag' ) )[-1];
+	my $match = ( map { $_ =~ /$regex/ } $self->repo->run( 'tag' ) )[-1];
+	die "Unable to find a matching tag for $regex" if ! defined $match;
+	return $match;
 }
 
 sub munge_files {
