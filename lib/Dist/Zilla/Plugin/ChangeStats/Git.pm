@@ -98,14 +98,14 @@ has develop_regexp => (
     is => 'ro',
     isa=> _CoercedRegexp,
     coerce => 1,
-    predicate => _has_develop_regexp,
+    predicate => '_has_develop_regexp',
 );
 
 has release_regexp => (
     is => 'ro',
     isa=> _CoercedRegexp,
     coerce => 1,
-    predicate => _has_release_regexp,
+    predicate => '_has_release_regexp',
 );
 
 has group => (
