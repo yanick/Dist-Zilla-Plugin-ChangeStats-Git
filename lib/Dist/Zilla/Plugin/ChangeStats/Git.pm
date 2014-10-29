@@ -144,7 +144,7 @@ sub _get_release_tag {
 	my( $self, $regex ) = @_;
 
 	# search whatever matches our regex, then return the most recent one
-	return ( map { $_ =~ /$regex/ } @{ $self->repo->run( 'tag' ) } )[-1];
+	return ( map { $_ =~ /$regex/ } $self->repo->run( 'tag' ) )[-1];
 }
 
 sub munge_files {
