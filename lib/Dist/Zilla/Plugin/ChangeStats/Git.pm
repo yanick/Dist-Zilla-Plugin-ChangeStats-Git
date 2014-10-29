@@ -30,7 +30,14 @@ The master developing branch. Defaults to I<master>.
 A regular expression to be used to search for tags. The most recent one matching this
 regex will be used. Overrides the default set in develop_branch if specified. Defaults to none.
 
-This is especially useful in conjunction with the L<Dist::Zilla::Plugin::Git::Tag> plugin!
+NOTE: You need to capture the entire tag in the regexp! This is especially useful in conjunction
+with the L<Dist::Zilla::Plugin::Git::Tag> plugin! Sample usage in the F<dist.ini> file:
+
+        [ChangeStats::Git]
+        release_regexp = ^(release-.+)$
+
+	[Git::Tag]
+	tag_format = release-%v
 
 =head2 release_branch
 
@@ -40,8 +47,6 @@ The branch recording the releases. Defaults to I<releases>.
 
 A regular expression to be used to search for tags. The most recent one matching this
 regex will be used. Overrides the default set in release_branch if specified. Defaults to none.
-
-This is especially useful in conjunction with the L<Dist::Zilla::Plugin::Git::Tag> plugin!
 
 =cut
 
