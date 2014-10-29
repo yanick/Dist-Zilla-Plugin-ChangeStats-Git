@@ -25,9 +25,23 @@ If given, the line is added to the specified group.
 
 The master developing branch. Defaults to I<master>.
 
+=head2 develop_regexp
+
+A regular expression to be used to search for tags. The most recent one matching this
+regex will be used. Overrides the default set in develop_branch if specified. Defaults to none.
+
+This is especially useful in conjunction with the L<Dist::Zilla::Plugin::Git::Tag> plugin!
+
 =head2 release_branch
 
 The branch recording the releases. Defaults to I<releases>.
+
+=head2 release_regexp
+
+A regular expression to be used to search for tags. The most recent one matching this
+regex will be used. Overrides the default set in release_branch if specified. Defaults to none.
+
+This is especially useful in conjunction with the L<Dist::Zilla::Plugin::Git::Tag> plugin!
 
 =cut
 
