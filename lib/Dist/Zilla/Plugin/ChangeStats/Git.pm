@@ -40,6 +40,7 @@ use Git::Repository;
 use Path::Tiny;
 
 use Moose;
+use Moose::Util::TypeConstraints;
 
 with qw/
     Dist::Zilla::Role::Plugin
@@ -73,6 +74,26 @@ has "release_branch" => (
     default => 'releases'
 );
 
+use constant _CoercedRegexp => do {
+    my $tc = subtype as 'RegexpRef';
+    coerce $tc, from 'Str', via { qr/$_/ };
+    $tc;
+};
+
+has develop_regexp => (
+    is => 'ro',
+    isa=> _CoercedRegexp,
+    coerce => 1,
+    predicate => _has_develop_regexp,
+);
+
+has release_regexp => (
+    is => 'ro',
+    isa=> _CoercedRegexp,
+    coerce => 1,
+    predicate => _has_release_regexp,
+);
+
 has group => (
     is => 'ro',
     default => '',
@@ -83,9 +104,18 @@ has stats => (
     lazy => 1,
     default => sub {
         my $self = shift;
-        
+
+	# What are we diffing against? :)
+	my( $prev, $next ) = ( $self->release_branch, $self->develop_branch );
+	if ( $self->_has_release_regexp ) {
+		$prev = $self->_get_release_tag( $self->release_regexp );
+	}
+	if ( $self->_has_develop_regexp ) {
+		$next = $self->_get_release_tag( $self->develop_regexp );
+	}
+
         my @output = $self->repo->run( 'diff', '--stat',
-            join '...', $self->release_branch, $self->develop_branch
+            join '...', $prev, $next
         );
 
         # actually, only the last line is interesting
@@ -95,6 +125,13 @@ has stats => (
         return $stats;
   } 
 );
+
+sub _get_release_tag {
+	my( $self, $regex ) = @_;
+
+	# search whatever matches our regex, then return the most recent one
+	return ( map { $_ =~ /$regex/ } @{ $self->repo->run( 'tag' ) } )[-1];
+}
 
 sub munge_files {
   my ($self) = @_;
