@@ -25,28 +25,14 @@ If given, the line is added to the specified group.
 
 The master developing branch. Defaults to I<master>.
 
-=head2 develop_regexp
+=head2 auto_previous_tag
 
-A regular expression to be used to search for tags. The most recent one matching this
-regex will be used. Overrides the default set in develop_branch if specified. Defaults to none.
-
-NOTE: You need to capture the entire tag in the regexp! This is especially useful in conjunction
-with the L<Dist::Zilla::Plugin::Git::Tag> plugin! Sample usage in the F<dist.ini> file:
-
-	[ChangeStats::Git]
-	release_regexp = ^(release-.+)$
-
-	[Git::Tag]
-	tag_format = release-%v
+If enabled, look in the guts of the L<Dist::Zilla::Plugin::Git::Tag> plugin in order to find the
+previous release's tag. This will be then compared against the develop_branch. Defaults to false (0).
 
 =head2 release_branch
 
 The branch recording the releases. Defaults to I<releases>.
-
-=head2 release_regexp
-
-A regular expression to be used to search for tags. The most recent one matching this
-regex will be used. Overrides the default set in release_branch if specified. Defaults to none.
 
 =cut
 
@@ -59,7 +45,6 @@ use Git::Repository;
 use Path::Tiny;
 
 use Moose;
-use Moose::Util::TypeConstraints;
 
 with qw/
     Dist::Zilla::Role::Plugin
@@ -93,24 +78,10 @@ has "release_branch" => (
     default => 'releases'
 );
 
-use constant _CoercedRegexp => do {
-    my $tc = subtype as 'RegexpRef';
-    coerce $tc, from 'Str', via { qr/$_/ };
-    $tc;
-};
-
-has develop_regexp => (
+has "auto_previous_tag" => (
+    isa => 'Bool',
     is => 'ro',
-    isa=> _CoercedRegexp,
-    coerce => 1,
-    predicate => '_has_develop_regexp',
-);
-
-has release_regexp => (
-    is => 'ro',
-    isa=> _CoercedRegexp,
-    coerce => 1,
-    predicate => '_has_release_regexp',
+    default => 0,
 );
 
 has group => (
@@ -126,13 +97,10 @@ has stats => (
 
 	# What are we diffing against? :)
 	my( $prev, $next ) = ( $self->release_branch, $self->develop_branch );
-	if ( $self->_has_release_regexp ) {
-		$prev = $self->_get_release_tag( $self->release_regexp );
+	if ( $self->auto_previous_tag ) {
+		$prev = $self->_get_previous_tag;
 	}
-	if ( $self->_has_develop_regexp ) {
-		$next = $self->_get_release_tag( $self->develop_regexp );
-	}
-
+	$self->log_debug( "Comparing '$prev' against '$next' for code stats" );
         my @output = $self->repo->run( 'diff', '--stat',
             join '...', $prev, $next
         );
@@ -145,12 +113,14 @@ has stats => (
   } 
 );
 
-sub _get_release_tag {
-	my( $self, $regex ) = @_;
-
-	# search whatever matches our regex, then return the most recent one
-	my $match = ( map { $_ =~ /$regex/ } $self->repo->run( 'tag' ) )[-1];
-	die "Unable to find a matching tag for $regex" if ! defined $match;
+sub _get_previous_tag {
+	my( $self ) = @_;
+	my @plugins = grep { $_->isa('Dist::Zilla::Plugin::Git::Tag') } @{ $self->zilla->plugins_with( '-Git::Repo' ) };
+	die "We dont know what to do with multiple Git::Tag plugins loaded!" if scalar @plugins > 1;
+	die "Please load the Git::Tag plugin to use auto_release_tag or disable it!" if ! scalar @plugins;
+	(my $match = $plugins[0]->tag_format) =~ s/\%\w/\.\+/g; # hack.
+	$match = ( grep { $_ =~ /$match/ } $self->repo->run( 'tag' ) )[-1];
+	die "Unable to find the previous tag!" if ! defined $match;
 	return $match;
 }
 
