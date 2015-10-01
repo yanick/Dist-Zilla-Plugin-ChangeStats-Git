@@ -4,6 +4,7 @@ Revision history for Dist-Zilla-Plugin-ChangeStats-Git
  [API CHANGES]
 
  [BUG FIXES]
+    - Fix regex warnings (and tests) in recent perls. (GH#4, Shlomi Fish)
 
  [DOCUMENTATION]
 
