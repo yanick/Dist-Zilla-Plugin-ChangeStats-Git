@@ -114,7 +114,7 @@ sub after_release {
 
   my $changes = CPAN::Changes->load( 
       $self->zilla->changelog_name,
-      next_token => qr/{{\$NEXT}}/ 
+      next_token => qr/\{\{\$NEXT\}\}/
   ); 
 
   for my $next ( reverse $changes->releases ) {
