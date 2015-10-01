@@ -46,7 +46,7 @@ sub changelog {
 
     return CPAN::Changes->load_string( 
         $self->changelog_file->content, 
-        next_token => qr/{{\$NEXT}}/
+        next_token => qr/\{\{\$NEXT\}\}/
     );
 }
 
