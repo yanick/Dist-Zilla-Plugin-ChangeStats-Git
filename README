@@ -1,0 +1,34 @@
+SYNOPSIS
+
+        In the dist.ini:
+    
+        [ChangeStats::Git]
+        group=STATISTICS
+
+DESCRIPTION
+
+    Adds a line to the changelog giving some stats about the code churn
+    since the last release, which will look like:
+
+      - code churn: 6 files changed, 111 insertions(+), 1 deletions(-)
+
+ARGUMENTS
+
+ group
+
+    If given, the line is added to the specified group.
+
+ develop_branch
+
+    The master developing branch. Defaults to master.
+
+ auto_previous_tag
+
+    If enabled, look in the guts of the Dist::Zilla::Plugin::Git::Tag
+    plugin in order to find the previous release's tag. This will be then
+    compared against the develop_branch. Defaults to false (0).
+
+ release_branch
+
+    The branch recording the releases. Defaults to releases.
+
