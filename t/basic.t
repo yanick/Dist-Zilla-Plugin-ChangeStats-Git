@@ -1,39 +1,110 @@
 use strict;
 use warnings;
 
-use Test::More;# tests => 5;
-
-plan skip_all => 'coming soon';
-
+use Test::More;
 use Test::DZil;
 
-my $dist_ini = dist_ini({
-        name     => 'DZT-Sample',
-        abstract => 'Sample DZ Dist',
-        author   => 'E. Xavier Ample <example@example.org>',
-        license  => 'Perl_5',
-        copyright_holder => 'E. Xavier Ample',
-    }, qw/
-        GatherDir
-        NextRelease
-        FakeRelease
-    /,
-    #ChangeStats::Git
+subtest standard => sub {
+    {
+        my $tzil = make_tzil({ group => 'STATISTICS' });
+
+        like $tzil->slurp_file('build/Changes'),
+            qr/
+                \[STATISTICS\]\s*\n
+                \s*-\s*code\schurn:\s+\d+\sfiles?\schanged,
+                \s\d+\sinsertions?\(\+\),\s\d+\sdeletions?\(-\)
+            /x,
+            "with group";
+    }
+    {
+        my $tzil = make_tzil({ text => '' });
+
+        like $tzil->slurp_file('build/Changes'),
+            qr/
+                \w\n                                                # \w for timezone
+                \s*-\s*\d+\sfiles?\schanged,
+                \s\d+\sinsertions?\(\+\),\s\d+\sdeletions?\(-\)
+            /x,
+            "without group, without leading text";
+    }
+};
+
+subtest skip_file => sub {
+    {
+        my $tzil = make_tzil({ group => 'STATISTICS', skip_file => 'Changes' });
+
+        like $tzil->slurp_file('build/Changes'),
+            qr/
+                \[STATISTICS\]\s*\n
+                \s*-\s*code\schurn:\s+0\sfiles?\schanged,
+                \s0\sinsertions?\(\+\),\s0\sdeletions?\(-\)
+            /x,
+            "using skip_file with hit";
+    }
+    {
+        my $tzil = make_tzil({ group => 'STATISTICS', skip_file => ['non_existant.file', 'andanother.file'] });
+
+        like $tzil->slurp_file('build/Changes'),
+            qr/
+                \[STATISTICS\]\s*\n
+                \s*-\s*code\schurn:\s+\d+\sfiles?\schanged,
+                \s\d+\sinsertions?\(\+\),\s\d+\sdeletions?\(-\)
+            /x,
+            "using skip_file without hit";
+    }
+};
+
+subtest skip_match => sub {
+    {
+        my $tzil = make_tzil({ group => 'STATISTICS', skip_match => 'cha' });
+
+        like $tzil->slurp_file('build/Changes'),
+            qr/
+                \[STATISTICS\]\s*\n
+                \s*-\s*code\schurn:\s+0\sfiles?\schanged,
+                \s0\sinsertions?\(\+\),\s0\sdeletions?\(-\)
+            /x,
+            "using skip_match with hit";
+    }
+    {
+        my $tzil = make_tzil({ group => 'STATISTICS', skip_match => 'nohit' });
+
+        like $tzil->slurp_file('build/Changes'),
+            qr/
+                \[STATISTICS\]\s*\n
+                \s*-\s*code\schurn:\s+\d+\sfiles?\schanged,
+                \s\d+\sinsertions?\(\+\),\s\d+\sdeletions?\(-\)
+            /x,
+            "using skip_match without hit";
+    }
+};
+done_testing;
+
+sub make_tzil {
+    my $ini = simple_ini(
+        { },
+        [ 'ChangeStats::Git', $_[0] ],
+        qw/
+            GatherDir
+            NextRelease
+            FakeRelease
+        /
     );
 
-my $tzil = Builder->from_config(
-    { dist_root => 'corpus' },
-    #  {
-    #        'source/dist.ini' => $dist_ini
-    #    },
-);
+    (my $changes = <<"        CHANGES") =~ s/^\s{8}//gm;
+        {{\$NEXT}}
 
-$tzil->build;
+        CHANGES
 
-like $tzil->slurp_file('build/Changes'),
-    qr/
-\[STATISTICS\]\s*\n
-\s*-\s*code\schurn:\s+\d+\sfiles\schanged,
-\s\d+\sinsertions\(\+\),\s\d+\sdeletions\(-\)
-    /x,
-    "stats added";
+    my $tzil = Builder->from_config(
+        {   dist_root => '/t' },
+        {
+            add_files => {
+                'source/dist.ini' => $ini,
+                'source/Changes' => $changes,
+            },
+        },
+    );
+    $tzil->build;
+    return $tzil;
+}

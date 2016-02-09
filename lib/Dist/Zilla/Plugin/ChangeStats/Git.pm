@@ -7,6 +7,7 @@ package Dist::Zilla::Plugin::ChangeStats::Git;
 
     [ChangeStats::Git]
     group=STATISTICS
+    skip_match=^meta
 
 =head1 DESCRIPTION
 
@@ -53,8 +54,10 @@ with qw/
 /;
 
 with 'Dist::Zilla::Role::Author::YANICK::RequireZillaRole' => {
-    roles => [ qw/ Author::YANICK::Changelog / ],
+    roles => [ '+Dist::Zilla::Role::Author::YANICK::Changelog' ],
 };
+
+sub mvp_multivalue_args { qw/ skip_file skip_match / }
 
 has repo => (
     is => 'ro',
@@ -89,11 +92,53 @@ has group => (
     default => '',
 );
 
+has skip_file => (
+    is => 'ro',
+    isa => 'ArrayRef[Str]',
+    default => sub { [] },
+    traits => ['Array'],
+    handles => {
+        all_skip_files => 'elements',
+        has_skip_files => 'count',
+    }
+);
+
+has skip_match => (
+    is => 'ro',
+    isa => 'ArrayRef[Str]',
+    default => sub { [] },
+    traits => ['Array'],
+    handles => {
+        all_skip_matches => 'elements',
+        has_skip_matches => 'count',
+    }
+);
+
+has text => (
+    is => 'ro',
+    isa => 'Str',
+    default => 'code churn',
+);
+
+
 has stats => (
     is => 'ro',
     lazy => 1,
     default => sub {
         my $self = shift;
+
+	my $comparison_data = $self->_get_comparison_data;
+	if ( defined $comparison_data ) {
+		my $stats = (length $self->text ? $self->text . ': ' : '') . $comparison_data;
+		$stats =~ s/\s+/ /g;
+		return $stats;
+	} else {
+		return;
+	}
+    }
+);
+sub _get_comparison_data {
+	my $self = shift;
 
 	# What are we diffing against? :)
 	my( $prev, $next ) = ( $self->release_branch, $self->develop_branch );
@@ -102,20 +147,41 @@ has stats => (
 		return if ! defined $prev;
 	}
 	$self->log_debug( "Comparing '$prev' against '$next' for code stats" );
-        my @output = $self->repo->run( 'diff', '--stat',
-            join '...', $prev, $next
-        );
 
-        # actually, only the last line is interesting
-	if ( defined $output[-1] ) {
-	        my $stats = "code churn: " . $output[-1];
-		$stats =~ s/\s+/ /g;
-	        return $stats;
-	} else {
-		return;
+	my $output;
+	if($self->has_skip_files || $self->has_skip_matches) {
+		my @numstats = $self->repo->run( 'diff', '--numstat',
+		    join '...', $prev, $next
+		);
+		my $data = { files => 0, insertions => 0, deletions => 0 };
+
+		ITEM:
+		for my $item (@numstats) {
+			my($insertions, $deletions, $path) = split /\s+/, $item, 3;
+			next ITEM if grep { $path eq $_ } $self->all_skip_files;
+			next ITEM if grep { $path =~ m{$_}i } $self->all_skip_matches;
+
+			# binary files get '-' for insertions/deletions
+			++$data->{'files'};
+			$data->{'insertions'} += $insertions =~ m{^\d+$} ? $insertions : 0;
+			$data->{'deletions'} += $deletions =~ m{^\d+$} ? $insertions : 0;
+		}
+
+		$output = sprintf '%d file%s changed, %d insertion%s(+), %d deletion%s(-)',
+				  $data->{'files'},
+				  $data->{'files'} == 1 ? '' : 's',
+				  $data->{'insertions'},
+				  $data->{'insertions'} == 1 ? '' : 's',
+				  $data->{'deletions'},
+				  $data->{'deletions'} == 1 ? '' : 's';
 	}
-  } 
-);
+	else {
+		($output) = $self->repo->run( 'diff', '--shortstat',
+		    join '...', $prev, $next
+		);
+	}
+	return $output;
+}
 
 sub _get_previous_tag {
 	my( $self ) = @_;
