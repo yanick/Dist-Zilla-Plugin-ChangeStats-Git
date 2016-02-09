@@ -35,6 +35,20 @@ previous release's tag. This will be then compared against the develop_branch. D
 
 The branch recording the releases. Defaults to I<releases>.
 
+=head2 text
+
+The text before git output. If it is a non-empty string, C<:E<lt>spaceE<gt>> will be appended. Defaults to I<code churn>.
+
+=head2 skip_file
+
+A complete path (from the distribution root) that should not be included in the statistics. Can be given
+multiple times.
+
+=head2 skip_match
+
+A part of a regex used to match against complete paths. Paths that match are not included in the statistics. Can be
+given multiple times.
+
 =cut
 
 use strict;
@@ -217,10 +231,10 @@ sub munge_files {
 sub after_release {
   my $self = shift;
   return unless $self->stats;
-  my $changes = CPAN::Changes->load( 
+  my $changes = CPAN::Changes->load(
       $self->zilla->changelog_name,
       next_token => qr/\{\{\$NEXT\}\}/
-  ); 
+  );
 
   for my $next ( reverse $changes->releases ) {
     next if $next->version =~ /NEXT/;
