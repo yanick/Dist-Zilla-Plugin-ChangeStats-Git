@@ -10,7 +10,7 @@ subtest standard => sub {
 
         like $tzil->slurp_file('build/Changes'),
             qr/
-                \[STATISTICS\]\s*\n
+                \[\s*STATISTICS\s*\]\s*\n
                 \s*-\s*code\schurn:\s+\d+\sfiles?\schanged,
                 \s\d+\sinsertions?\(\+\),\s\d+\sdeletions?\(-\)
             /x,
@@ -35,7 +35,7 @@ subtest skip_file => sub {
 
         like $tzil->slurp_file('build/Changes'),
             qr/
-                \[STATISTICS\]\s*\n
+                \[ \s* STATISTICS \s* \] \s* \n
                 \s*-\s*code\schurn:\s+0\sfiles?\schanged,
                 \s0\sinsertions?\(\+\),\s0\sdeletions?\(-\)
             /x,
@@ -46,7 +46,7 @@ subtest skip_file => sub {
 
         like $tzil->slurp_file('build/Changes'),
             qr/
-                \[STATISTICS\]\s*\n
+                \[ \s* STATISTICS \s* \] \s* \n
                 \s*-\s*code\schurn:\s+\d+\sfiles?\schanged,
                 \s\d+\sinsertions?\(\+\),\s\d+\sdeletions?\(-\)
             /x,
@@ -60,7 +60,7 @@ subtest skip_match => sub {
 
         like $tzil->slurp_file('build/Changes'),
             qr/
-                \[STATISTICS\]\s*\n
+                \[ \s* STATISTICS \s* \] \s* \n
                 \s*-\s*code\schurn:\s+0\sfiles?\schanged,
                 \s0\sinsertions?\(\+\),\s0\sdeletions?\(-\)
             /x,
@@ -71,7 +71,7 @@ subtest skip_match => sub {
 
         like $tzil->slurp_file('build/Changes'),
             qr/
-                \[STATISTICS\]\s*\n
+                \[ \s* STATISTICS \s* \] \s* \n
                 \s*-\s*code\schurn:\s+\d+\sfiles?\schanged,
                 \s\d+\sinsertions?\(\+\),\s\d+\sdeletions?\(-\)
             /x,
