@@ -25,8 +25,9 @@ role {
         $zilla->meta->make_mutable;
 
         for my $role ( @{ $p->roles } ) {
+
             $role =~ s/^\+// 
-                or $role =~ s/^/Dist::Zilla::Role::/;
+                or $role =~ s/^/Dist::Zilla::Role::/ if $role !~ m/^Dist::Zilla::Role::/;
 
             next if $zilla->does($role);
 
