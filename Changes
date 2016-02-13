@@ -1,19 +1,12 @@
 Revision history for Dist-Zilla-Plugin-ChangeStats-Git
 
-{{$NEXT}}
-  [ API CHANGES ]
-
-  [ BUG FIXES ]
-
-  [ DOCUMENTATION ]
-
+0.5.0 2016-02-13
   [ ENHANCEMENTS ]
-  - new plugin options 'text', 'skip_file', and 'skip_match'. 
-        (GH#5, Erik Carlsson)
-
-  [ NEW FEATURES ]
+    - new plugin options 'text', 'skip_file', and 'skip_match'.  (GH#5,
+      Erik Carlsson)
 
   [ STATISTICS ]
+    - code churn: 5 files changed, 241 insertions(+), 76 deletions(-)
 
 0.4.0 2015-10-01
   [ BUG FIXES ]

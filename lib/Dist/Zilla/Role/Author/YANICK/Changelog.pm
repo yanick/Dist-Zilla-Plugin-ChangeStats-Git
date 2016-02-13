@@ -1,19 +1,13 @@
 package Dist::Zilla::Role::Author::YANICK::Changelog;
+our $AUTHORITY = 'cpan:YANICK';
 # ABSTRACT: provides an accessor for the changelog
-
+$Dist::Zilla::Role::Author::YANICK::Changelog::VERSION = '0.5.0';
 use strict;
 use warnings;
 
 use Moose::Role;
 use List::Util qw/ first /;
 
-=head1 ATTRIBUTES
-
-=head1 changelog_name()
-
-The name of the changelog file. Defaults to C<Changes>.
-
-=cut
 
 has changelog_name => (
     is => 'ro',
@@ -21,13 +15,6 @@ has changelog_name => (
     default => 'Changes',
 );
 
-=head1 METHODS
-
-=head2 changelog_file
-
-Returns the changelog file object.
-
-=cut 
 
 sub changelog_file {
     my $self = shift;
@@ -35,11 +22,6 @@ sub changelog_file {
     return first { $_->name eq $self->changelog_name } @{ $self->files };
 };
 
-=head2 changelog()
-
-Returns a L<CPAN::Changes> object representing the changelog.
-
-=cut
 
 sub changelog {
     my $self = shift;
@@ -50,11 +32,6 @@ sub changelog {
     );
 }
 
-=head2 save_changelog( $changes )
-
-Commit I<$changes> as the changelog file for the distribution.
-
-=cut 
 
 sub save_changelog {
     my $self = shift;
@@ -65,6 +42,18 @@ sub save_changelog {
 1;
 
 __END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dist::Zilla::Role::Author::YANICK::Changelog - provides an accessor for the changelog
+
+=head1 VERSION
+
+version 0.5.0
 
 =head1 SYNOPSIS
 
@@ -95,3 +84,35 @@ __END__
 
 Allows to access directly the distribution's changelog.
 
+=head1 ATTRIBUTES
+
+=head1 changelog_name()
+
+The name of the changelog file. Defaults to C<Changes>.
+
+=head1 METHODS
+
+=head2 changelog_file
+
+Returns the changelog file object.
+
+=head2 changelog()
+
+Returns a L<CPAN::Changes> object representing the changelog.
+
+=head2 save_changelog( $changes )
+
+Commit I<$changes> as the changelog file for the distribution.
+
+=head1 AUTHOR
+
+Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
