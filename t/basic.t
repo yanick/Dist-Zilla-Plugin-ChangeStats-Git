@@ -2,6 +2,9 @@ use strict;
 use warnings;
 
 use Test::More;
+
+plan skip_all => 'need to create sub-git repo for tests';
+
 use Test::DZil;
 
 subtest standard => sub {
