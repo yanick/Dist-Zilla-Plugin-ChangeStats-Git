@@ -8,6 +8,8 @@ Revision history for Dist-Zilla-Plugin-ChangeStats-Git
   [ DOCUMENTATION ]
 
   [ ENHANCEMENTS ]
+  - new plugin options 'text', 'skip_file', and 'skip_match'. 
+        (GH#5, Erik Carlsson)
 
   [ NEW FEATURES ]
 
