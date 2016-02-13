@@ -178,7 +178,7 @@ sub _get_comparison_data {
 			# binary files get '-' for insertions/deletions
 			++$data->{'files'};
 			$data->{'insertions'} += $insertions =~ m{^\d+$} ? $insertions : 0;
-			$data->{'deletions'} += $deletions =~ m{^\d+$} ? $insertions : 0;
+			$data->{'deletions'} += $deletions =~ m{^\d+$} ? $deletions : 0;
 		}
 
 		$output = sprintf '%d file%s changed, %d insertion%s(+), %d deletion%s(-)',
