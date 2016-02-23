@@ -1,55 +1,7 @@
 package Dist::Zilla::Plugin::ChangeStats::Git;
+our $AUTHORITY = 'cpan:YANICK';
 # ABSTRACT: add code churn statistics to the changelog
-
-=head1 SYNOPSIS
-
-    In the dist.ini:
-
-    [ChangeStats::Git]
-    group=STATISTICS
-    skip_match=^meta
-
-=head1 DESCRIPTION
-
-Adds a line to the changelog giving some stats about the
-code churn since the last release, which will look like:
-
-  - code churn: 6 files changed, 111 insertions(+), 1 deletions(-)
-
-=head1 ARGUMENTS
-
-=head2 group
-
-If given, the line is added to the specified group.
-
-=head2 develop_branch
-
-The master developing branch. Defaults to I<master>.
-
-=head2 auto_previous_tag
-
-If enabled, look in the guts of the L<Dist::Zilla::Plugin::Git::Tag> plugin in order to find the
-previous release's tag. This will be then compared against the develop_branch. Defaults to false (0).
-
-=head2 release_branch
-
-The branch recording the releases. Defaults to I<releases>.
-
-=head2 text
-
-The text before git output. If it is a non-empty string, C<:E<lt>spaceE<gt>> will be appended. Defaults to I<code churn>.
-
-=head2 skip_file
-
-A complete path (from the distribution root) that should not be included in the statistics. Can be given
-multiple times.
-
-=head2 skip_match
-
-A part of a regex used to match against complete paths. Paths that match are not included in the statistics. Can be
-given multiple times.
-
-=cut
+$Dist::Zilla::Plugin::ChangeStats::Git::VERSION = '0.5.1';
 
 use strict;
 use warnings;
@@ -253,3 +205,78 @@ __PACKAGE__->meta->make_immutable;
 no Moose;
 
 1;
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dist::Zilla::Plugin::ChangeStats::Git - add code churn statistics to the changelog
+
+=head1 VERSION
+
+version 0.5.1
+
+=head1 SYNOPSIS
+
+    In the dist.ini:
+
+    [ChangeStats::Git]
+    group=STATISTICS
+    skip_match=^meta
+
+=head1 DESCRIPTION
+
+Adds a line to the changelog giving some stats about the
+code churn since the last release, which will look like:
+
+  - code churn: 6 files changed, 111 insertions(+), 1 deletions(-)
+
+=head1 ARGUMENTS
+
+=head2 group
+
+If given, the line is added to the specified group.
+
+=head2 develop_branch
+
+The master developing branch. Defaults to I<master>.
+
+=head2 auto_previous_tag
+
+If enabled, look in the guts of the L<Dist::Zilla::Plugin::Git::Tag> plugin in order to find the
+previous release's tag. This will be then compared against the develop_branch. Defaults to false (0).
+
+=head2 release_branch
+
+The branch recording the releases. Defaults to I<releases>.
+
+=head2 text
+
+The text before git output. If it is a non-empty string, C<:E<lt>spaceE<gt>> will be appended. Defaults to I<code churn>.
+
+=head2 skip_file
+
+A complete path (from the distribution root) that should not be included in the statistics. Can be given
+multiple times.
+
+=head2 skip_match
+
+A part of a regex used to match against complete paths. Paths that match are not included in the statistics. Can be
+given multiple times.
+
+=head1 AUTHOR
+
+Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
