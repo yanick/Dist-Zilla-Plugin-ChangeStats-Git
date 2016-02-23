@@ -4,6 +4,7 @@ Revision history for Dist-Zilla-Plugin-ChangeStats-Git
   [ API CHANGES ]
 
   [ BUG FIXES ]
+  - Fix deletions count bug when skipping files. (GH#7, Erik Carlsson)
 
   [ DOCUMENTATION ]
 
