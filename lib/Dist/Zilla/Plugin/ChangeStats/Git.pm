@@ -58,6 +58,7 @@ use CPAN::Changes 0.17;
 use Perl::Version;
 use Git::Repository;
 use Path::Tiny;
+use Try::Tiny;
 
 use Moose;
 
@@ -141,78 +142,85 @@ has stats => (
     default => sub {
         my $self = shift;
 
-	my $comparison_data = $self->_get_comparison_data;
-	if ( defined $comparison_data ) {
-		my $stats = (length $self->text ? $self->text . ': ' : '') . $comparison_data;
-		$stats =~ s/\s+/ /g;
-		return $stats;
-	} else {
-		return;
-	}
+    my $comparison_data = $self->_get_comparison_data;
+    if ( defined $comparison_data ) {
+        my $stats = (length $self->text ? $self->text . ': ' : '') . $comparison_data;
+        $stats =~ s/\s+/ /g;
+        return $stats;
+    } else {
+        return;
+    }
     }
 );
 sub _get_comparison_data {
-	my $self = shift;
+    my $self = shift;
 
-	# What are we diffing against? :)
-	my( $prev, $next ) = ( $self->release_branch, $self->develop_branch );
-	if ( $self->auto_previous_tag ) {
-		$prev = $self->_get_previous_tag;
-		return if ! defined $prev;
-	}
-	$self->log_debug( "Comparing '$prev' against '$next' for code stats" );
+    # What are we diffing against? :)
+    my( $prev, $next ) = ( $self->release_branch, $self->develop_branch );
+    if ( $self->auto_previous_tag ) {
+        $prev = $self->_get_previous_tag;
+        return if ! defined $prev;
+    }
+    $self->log_debug( "Comparing '$prev' against '$next' for code stats" );
 
-	my $output;
-	if($self->has_skip_files || $self->has_skip_matches) {
-		my @numstats = $self->repo->run( 'diff', '--numstat',
-		    join '...', $prev, $next
-		);
-		my $data = { files => 0, insertions => 0, deletions => 0 };
+    my $output;
+    if($self->has_skip_files || $self->has_skip_matches) {
+        my @numstats = try { $self->repo->run( 'diff', '--numstat',
+            join '...', $prev, $next
+        ) } catch {
+            warn "could not gather stats: $_\n";
+            return;
+        } or return;
 
-		ITEM:
-		for my $item (@numstats) {
-			my($insertions, $deletions, $path) = split /\s+/, $item, 3;
-			next ITEM if grep { $path eq $_ } $self->all_skip_files;
-			next ITEM if grep { $path =~ m{$_}i } $self->all_skip_matches;
+        my $data = { files => 0, insertions => 0, deletions => 0 };
 
-			# binary files get '-' for insertions/deletions
-			++$data->{'files'};
-			$data->{'insertions'} += $insertions =~ m{^\d+$} ? $insertions : 0;
-			$data->{'deletions'} += $deletions =~ m{^\d+$} ? $deletions : 0;
-		}
+        ITEM:
+        for my $item (@numstats) {
+            my($insertions, $deletions, $path) = split /\s+/, $item, 3;
+            next ITEM if grep { $path eq $_ } $self->all_skip_files;
+            next ITEM if grep { $path =~ m{$_}i } $self->all_skip_matches;
 
-		$output = sprintf '%d file%s changed, %d insertion%s(+), %d deletion%s(-)',
-				  $data->{'files'},
-				  $data->{'files'} == 1 ? '' : 's',
-				  $data->{'insertions'},
-				  $data->{'insertions'} == 1 ? '' : 's',
-				  $data->{'deletions'},
-				  $data->{'deletions'} == 1 ? '' : 's';
-	}
-	else {
-		($output) = $self->repo->run( 'diff', '--shortstat',
-		    join '...', $prev, $next
-		);
-	}
-	return $output;
+            # binary files get '-' for insertions/deletions
+            ++$data->{'files'};
+            $data->{'insertions'} += $insertions =~ m{^\d+$} ? $insertions : 0;
+            $data->{'deletions'} += $deletions =~ m{^\d+$} ? $deletions : 0;
+        }
+
+        $output = sprintf '%d file%s changed, %d insertion%s(+), %d deletion%s(-)',
+                  $data->{'files'},
+                  $data->{'files'} == 1 ? '' : 's',
+                  $data->{'insertions'},
+                  $data->{'insertions'} == 1 ? '' : 's',
+                  $data->{'deletions'},
+                  $data->{'deletions'} == 1 ? '' : 's';
+    }
+    else {
+        ($output) = try {
+            $self->repo->run( 'diff', '--shortstat', join '...', $prev, $next) 
+        } catch {
+            warn "could not gather stats: $_\n";
+            return;
+        };
+    }
+    return $output;
 }
 
 sub _get_previous_tag {
-	my( $self ) = @_;
-	my @plugins = grep { $_->isa('Dist::Zilla::Plugin::Git::Tag') } @{ $self->zilla->plugins_with( '-Git::Repo' ) };
-	die "We dont know what to do with multiple Git::Tag plugins loaded!" if scalar @plugins > 1;
-	die "Please load the Git::Tag plugin to use auto_release_tag or disable it!" if ! scalar @plugins;
-	(my $match = $plugins[0]->tag_format) =~ s/\%\w/\.\+/g; # hack.
-	$match = ( grep { $_ =~ /$match/ } $self->repo->run( 'tag' ) )[-1];
-	if ( ! defined $match ) {
-		$self->log( "Unable to find the previous tag, trying to find the first commit!" );
-		$match = $self->repo->run( 'rev-list', "--max-parents=0", 'HEAD' );
-		if ( ! defined $match ) {
-			$self->log( "Unable to find the first commit, giving up!" );
-			return;
-		}
-	}
-	return $match;
+    my( $self ) = @_;
+    my @plugins = grep { $_->isa('Dist::Zilla::Plugin::Git::Tag') } @{ $self->zilla->plugins_with( '-Git::Repo' ) };
+    die "We dont know what to do with multiple Git::Tag plugins loaded!" if scalar @plugins > 1;
+    die "Please load the Git::Tag plugin to use auto_release_tag or disable it!" if ! scalar @plugins;
+    (my $match = $plugins[0]->tag_format) =~ s/\%\w/\.\+/g; # hack.
+    $match = ( grep { $_ =~ /$match/ } $self->repo->run( 'tag' ) )[-1];
+    if ( ! defined $match ) {
+        $self->log( "Unable to find the previous tag, trying to find the first commit!" );
+        $match = $self->repo->run( 'rev-list', "--max-parents=0", 'HEAD' );
+        if ( ! defined $match ) {
+            $self->log( "Unable to find the first commit, giving up!" );
+            return;
+        }
+    }
+    return $match;
 }
 
 sub munge_files {
