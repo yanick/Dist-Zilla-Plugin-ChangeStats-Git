@@ -8,6 +8,7 @@ Revision history for Dist-Zilla-Plugin-ChangeStats-Git
   [ DOCUMENTATION ]
 
   [ ENHANCEMENTS ]
+  - plugin doesn't crash if the git branches used for the diff don't exist.
 
   [ NEW FEATURES ]
 

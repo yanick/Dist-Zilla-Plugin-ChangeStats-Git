@@ -58,6 +58,7 @@ use CPAN::Changes 0.17;
 use Perl::Version;
 use Git::Repository;
 use Path::Tiny;
+use Try::Tiny;
 
 use Moose;
 
@@ -164,9 +165,13 @@ sub _get_comparison_data {
 
     my $output;
     if($self->has_skip_files || $self->has_skip_matches) {
-        my @numstats = $self->repo->run( 'diff', '--numstat',
+        my @numstats = try { $self->repo->run( 'diff', '--numstat',
             join '...', $prev, $next
-        );
+        ) } catch {
+            warn "could not gather stats: $_\n";
+            return;
+        } or return;
+
         my $data = { files => 0, insertions => 0, deletions => 0 };
 
         ITEM:
@@ -190,9 +195,12 @@ sub _get_comparison_data {
                   $data->{'deletions'} == 1 ? '' : 's';
     }
     else {
-        ($output) = $self->repo->run( 'diff', '--shortstat',
-            join '...', $prev, $next
-        );
+        ($output) = try {
+            $self->repo->run( 'diff', '--shortstat', join '...', $prev, $next) 
+        } catch {
+            warn "could not gather stats: $_\n";
+            return;
+        };
     }
     return $output;
 }
