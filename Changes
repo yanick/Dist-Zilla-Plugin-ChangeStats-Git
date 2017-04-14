@@ -1,18 +1,12 @@
 Revision history for Dist-Zilla-Plugin-ChangeStats-Git
 
-{{$NEXT}}
-  [ API CHANGES ]
-
-  [ BUG FIXES ]
-
-  [ DOCUMENTATION ]
-
+0.6.0 2017-04-14
   [ ENHANCEMENTS ]
-  - plugin doesn't crash if the git branches used for the diff don't exist.
-
-  [ NEW FEATURES ]
+    - plugin doesn't crash if the git branches used for the diff don't
+      exist.
 
   [ STATISTICS ]
+    - code churn: 3 files changed, 82 insertions(+), 69 deletions(-)
 
 0.5.1 2016-02-22
   [ BUG FIXES ]
